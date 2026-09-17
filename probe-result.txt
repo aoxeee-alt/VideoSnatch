@@ -1,24 +1,30 @@
 步骤1：访问首页领取访客Cookie
-  首页 HTTP: 200  大小: 72914
-  拿到Cookie: __ac_nonce=06aabf9f7009db7054ed8
+  首页 HTTP: 200  大小: 2397
+  拿到Cookie: 无
 
 ============================================================
 方案: 精简版
 请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630
-  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
-  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie] HTTP: 200 大小: 0 命中: 无
+  片段: 
+  [带Cookie+Referer] HTTP: 200 大小: 0 命中: 无
+  片段: 
 
 ============================================================
 方案: 带aid
 请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630&aid=1128&device_platform=web_pc&channel=channel_pc_web
-  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
-  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie] HTTP: 200 大小: 0 命中: 无
+  片段: 
+  [带Cookie+Referer] HTTP: 200 大小: 0 命中: 无
+  片段: 
 
 ============================================================
 方案: 完整版
 请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630&aid=6383&app_name=douyin_web&device_platform=web_pc&channel=channel_pc_web&pc_cli
-  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
-  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie] HTTP: 200 大小: 0 命中: 无
+  片段: 
+  [带Cookie+Referer] HTTP: 200 大小: 0 命中: 无
+  片段: 
 
 步骤2：直接测分享页（带Cookie）
-  HTTP: 200  大小: 6333  命中: 无
+  HTTP: 200  大小: 2397  命中: 无
