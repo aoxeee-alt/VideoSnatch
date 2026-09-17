@@ -1,70 +1,24 @@
-============================================================
-通道: 分享页+蜘蛛UA
-请求: https://www.iesdouyin.com/share/video/7686318782050422630/
-HTTP: 200  大小: 88690
-命中关键字: 无
-内容片段: <!DOCTYPE html><html dark="true"  dark="true"><head><link rel="shortcut icon" href="//p-pc-weboff.byteimg.com/tos-cn-i-9r5gewecjs/favicon.png" type="image/x-icon"/><link rel="apple-touch-icon" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><link rel="apple-touch-startup-image" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><meta name="mobile-web-app-capable" content="yes"/><link rel="icon" sizes="192x192" href="https
+步骤1：访问首页领取访客Cookie
+  首页 HTTP: 200  大小: 72914
+  拿到Cookie: __ac_nonce=06aabf9f7009db7054ed8
 
 ============================================================
-通道: 网页+蜘蛛UA
-请求: https://www.douyin.com/video/7686318782050422630
-HTTP: 200  大小: 84878
-命中关键字: 无
-内容片段: <!DOCTYPE html><html dark="true"  dark="true"><head><link rel="shortcut icon" href="//p-pc-weboff.byteimg.com/tos-cn-i-9r5gewecjs/favicon.png" type="image/x-icon"/><link rel="apple-touch-icon" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><link rel="apple-touch-startup-image" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><meta name="mobile-web-app-capable" content="yes"/><link rel="icon" sizes="192x192" href="https
+方案: 精简版
+请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630
+  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
 
 ============================================================
-通道: 分享页+必应UA
-请求: https://www.iesdouyin.com/share/video/7686318782050422630/
-HTTP: 200  大小: 85285
-命中关键字: 无
-内容片段: <!DOCTYPE html><html dark="true"  dark="true"><head><link rel="shortcut icon" href="//p-pc-weboff.byteimg.com/tos-cn-i-9r5gewecjs/favicon.png" type="image/x-icon"/><link rel="apple-touch-icon" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><link rel="apple-touch-startup-image" href="https://lf-douyin-pc-web.douyinstatic.com/obj/douyin-pc-web/2025_0313_logo.png"/><meta name="mobile-web-app-capable" content="yes"/><link rel="icon" sizes="192x192" href="https
+方案: 带aid
+请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630&aid=1128&device_platform=web_pc&channel=channel_pc_web
+  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
 
 ============================================================
-通道: tiktokv-feed-a
-请求: https://api22-normal-c-useast2a.tiktokv.com/aweme/v1/feed/?aweme_id=7686318782050422630&version_code=300904&app_name=musical_ly&ch
-失败: TimeoutError The read operation timed out
+方案: 完整版
+请求: https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7686318782050422630&aid=6383&app_name=douyin_web&device_platform=web_pc&channel=channel_pc_web&pc_cli
+  [带Cookie] 失败: HTTPError HTTP Error 403: Forbidden
+  [带Cookie+Referer] 失败: HTTPError HTTP Error 403: Forbidden
 
-============================================================
-通道: tiktokv-feed-b
-请求: https://api16-normal-c-useast1a.tiktokv.com/aweme/v1/feed/?aweme_id=7686318782050422630&version_code=300904&app_name=musical_ly&ch
-失败: HTTPError HTTP Error 429: Too Many Requests
-
-============================================================
-通道: vvhan
-请求: https://api.vvhan.com/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-失败: URLError <urlopen error [Errno -2] Name or service not known>
-
-============================================================
-通道: aa1
-请求: https://api.aa1.cn/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-HTTP: 200  大小: 5
-命中关键字: 无
-内容片段: 接口不存在
-
-============================================================
-通道: oioweb
-请求: https://api.oioweb.cn/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-失败: URLError <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1000)>
-
-============================================================
-通道: tangdouz
-请求: https://api.tangdouz.com/api/douyin.php?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-失败: HTTPError HTTP Error 404: Not Found
-
-============================================================
-通道: cenguigui
-请求: https://api.cenguigui.cn/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-HTTP: 200  大小: 19704
-命中关键字: ['.mp4']
-内容片段: <!DOCTYPE html> <html lang="en">  <head>     <meta charset="utf-8" />     <title>随机视频-笒鬼鬼</title>     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />     <!-- Link Swiper's CSS -->     <link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/Swiper/8.0.6/swiper-bundle.css" />     <!-- 样式css -->     <style>         * {             margin: 0;             padding: 0;         }          a {             -webkit-tap-highligh
-
-============================================================
-通道: xiaobaibk
-请求: https://api.xiaobaibk.cn/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-失败: URLError <urlopen error [Errno -2] Name or service not known>
-
-============================================================
-通道: yyy001
-请求: https://api.yyy001.com/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
-失败: URLError <urlopen error [Errno -2] Name or service not known>
-
+步骤2：直接测分享页（带Cookie）
+  HTTP: 200  大小: 6333  命中: 无
