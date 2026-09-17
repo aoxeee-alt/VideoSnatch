@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "updated": "2026-09-17",
+  "note": "解析规则文件。抖音/皮皮虾/X 的解析方式全写在这里。接口失效时只要改这个文件，App 会自动拉取新规则，不用重新安装。",
+  "extractUrl": "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+",
+  "defaultHeaders": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Accept": "*/*",
+    "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8"
+  },
+  "providers": [
+    {
+      "id": "douyin-web",
+      "name": "抖音·网页直取",
+      "match": ["douyin\\.com", "iesdouyin\\.com"],
+      "steps": [
+        { "type": "http", "method": "GET", "url": "{link}", "followRedirects": true, "save": "page",
+          "headers": { "Referer": "https://www.douyin.com/" } },
+        { "type": "regex", "from": "page_url", "save": "id", "optional": true,
+          "pattern": ["/video/(\\d{6,})", "/note/(\\d{6,})", "/slide/(\\d{6,})", "aweme_id=(\\d{6,})", "modal_id=(\\d{6,})"] },
+        { "type": "regex", "from": "page", "save": "id", "optional": true,
+          "pattern": ["\"aweme_id\"\\s*:\\s*\"?(\\d{6,})\"?", "\"awemeId\"\\s*:\\s*\"?(\\d{6,})\"?", "aweme_id=(\\d{6,})", "/video/(\\d{6,})"] },
+        { "type": "http", "method": "GET", "url": "https://www.douyin.com/video/{id}", "save": "detail",
+          "headers": { "Referer": "https://www.douyin.com/" } },
+        { "type": "regex", "from": "detail", "save": "rawUrl",
+          "pattern": ["\"playAddr\"\\s*:\\s*\\[\\s*\\{\\s*\"src\"\\s*:\\s*\"([^\"]+)\"", "\"playApi\"\\s*:\\s*\"([^\"]+)\"", "\"downloadAddr\"\\s*:\\s*\"([^\"]+)\""] },
+        { "type": "decode", "from": "rawUrl", "codec": "json_escape", "save": "videoUrl" },
+        { "type": "regex", "from": "detail", "save": "title", "optional": true,
+          "pattern": ["\"desc\"\\s*:\\s*\"([^\"]{0,120})\""] },
+        { "type": "decode", "from": "title", "codec": "json_escape", "save": "title", "optional": true },
+        { "type": "regex", "from": "detail", "save": "cover", "optional": true,
+          "pattern": ["\"cover\"\\s*:\\s*\\{\\s*\"uri\"\\s*:\\s*\"([^\"]+)\"", "\"origin_cover\"\\s*:\\s*\\{\\s*\"uri\"\\s*:\\s*\"([^\"]+)\""] }
+      ],
+      "output": {
+        "url": "{videoUrl}",
+        "title": "{title}",
+        "cover": "{cover}",
+        "downloadHeaders": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Referer": "https://www.douyin.com/"
+        }
+      }
+    },
+    {
+      "id": "douyin-api",
+      "name": "抖音·备用接口",
+      "match": ["douyin\\.com", "iesdouyin\\.com"],
+      "steps": [
+        { "type": "http", "method": "GET", "url": "{link}", "followRedirects": true, "save": "page" },
+        { "type": "regex", "from": "page_url", "save": "id", "optional": true,
+          "pattern": ["/video/(\\d{6,})", "aweme_id=(\\d{6,})", "modal_id=(\\d{6,})"] },
+        { "type": "regex", "from": "page", "save": "id", "optional": true,
+          "pattern": ["\"aweme_id\"\\s*:\\s*\"?(\\d{6,})\"?", "/video/(\\d{6,})"] },
+        { "type": "http", "method": "GET", "url": "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={id}", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "item_list[0].video.play_addr.url_list[0].url", "save": "rawUrl" },
+        { "type": "replace", "from": "rawUrl", "pattern": "playwm", "to": "play", "save": "rawUrl" },
+        { "type": "decode", "from": "rawUrl", "codec": "json_escape", "save": "videoUrl" },
+        { "type": "jsonpath", "from": "json", "path": "item_list[0].desc", "save": "title", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "item_list[0].video.origin_cover.url_list[0]", "save": "cover", "optional": true }
+      ],
+      "output": {
+        "url": "{videoUrl}",
+        "title": "{title}",
+        "cover": "{cover}",
+        "downloadHeaders": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Referer": "https://www.douyin.com/"
+        }
+      }
+    },
+    {
+      "id": "pipix-webapi",
+      "name": "皮皮虾·接口",
+      "match": ["pipix\\.com"],
+      "steps": [
+        { "type": "http", "method": "GET", "url": "{link}", "followRedirects": true, "save": "page" },
+        { "type": "regex", "from": "page_url", "save": "id", "optional": true,
+          "pattern": ["/item/(\\d{6,})", "item_id=(\\d{6,})"] },
+        { "type": "regex", "from": "page", "save": "id", "optional": true,
+          "pattern": ["\"item_id\"\\s*:\\s*\"?(\\d{6,})\"?", "\"itemId\"\\s*:\\s*\"?(\\d{6,})\"?", "/item/(\\d{6,})"] },
+        { "type": "http", "method": "GET", "url": "https://h5.pipix.com/bds/webapi/item/detail/?item_id={id}", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "data.item.video.play_addr.url_list[0].url", "save": "rawUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "data.item.video.download_addr.url_list[0].url", "save": "rawUrl", "optional": true },
+        { "type": "replace", "from": "rawUrl", "pattern": "playwm", "to": "play", "save": "rawUrl" },
+        { "type": "decode", "from": "rawUrl", "codec": "json_escape", "save": "videoUrl" },
+        { "type": "jsonpath", "from": "json", "path": "data.item.content", "save": "title", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "data.item.video.cover.url_list[0]", "save": "cover", "optional": true }
+      ],
+      "output": {
+        "url": "{videoUrl}",
+        "title": "{title}",
+        "cover": "{cover}",
+        "downloadHeaders": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Referer": "https://h5.pipix.com/"
+        }
+      }
+    },
+    {
+      "id": "pipix-page",
+      "name": "皮皮虾·网页兜底",
+      "match": ["pipix\\.com"],
+      "steps": [
+        { "type": "http", "method": "GET", "url": "{link}", "followRedirects": true, "save": "page" },
+        { "type": "regex", "from": "page", "save": "rawUrl",
+          "pattern": ["\"play_addr\".{0,800}?\"url\"\\s*:\\s*\"([^\"]+)\"", "\"download_addr\".{0,800}?\"url\"\\s*:\\s*\"([^\"]+)\"", "\"url\"\\s*:\\s*\"(https?:[^\"]*?\\.mp4[^\"]*)\""] },
+        { "type": "replace", "from": "rawUrl", "pattern": "playwm", "to": "play", "save": "rawUrl" },
+        { "type": "decode", "from": "rawUrl", "codec": "json_escape", "save": "videoUrl" },
+        { "type": "regex", "from": "page", "save": "title", "optional": true,
+          "pattern": ["\"content\"\\s*:\\s*\"([^\"]{0,120})\""] },
+        { "type": "decode", "from": "title", "codec": "json_escape", "save": "title", "optional": true }
+      ],
+      "output": {
+        "url": "{videoUrl}",
+        "title": "{title}",
+        "downloadHeaders": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Referer": "https://h5.pipix.com/"
+        }
+      }
+    },
+    {
+      "id": "x-fxtwitter",
+      "name": "X·接口A",
+      "match": ["x\\.com/", "twitter\\.com/"],
+      "steps": [
+        { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
+        { "type": "regex", "from": "link", "save": "user", "optional": true,
+          "pattern": ["(?:x|twitter)\\.com/([A-Za-z0-9_]{1,15})/"] },
+        { "type": "set", "value": "i", "save": "user", "whenEmpty": true },
+        { "type": "http", "method": "GET", "url": "https://api.fxtwitter.com/{user}/status/{id}", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "tweet.media.videos[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "tweet.media.all[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "tweet.text", "save": "title", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "tweet.media.videos[0].thumbnail_url", "save": "cover", "optional": true }
+      ],
+      "output": { "url": "{videoUrl}", "title": "{title}", "cover": "{cover}" }
+    },
+    {
+      "id": "x-vxtwitter",
+      "name": "X·接口B",
+      "match": ["x\\.com/", "twitter\\.com/"],
+      "steps": [
+        { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
+        { "type": "regex", "from": "link", "save": "user", "optional": true,
+          "pattern": ["(?:x|twitter)\\.com/([A-Za-z0-9_]{1,15})/"] },
+        { "type": "set", "value": "i", "save": "user", "whenEmpty": true },
+        { "type": "http", "method": "GET", "url": "https://api.vxtwitter.com/{user}/status/{id}", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "mediaURLs[0]", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "text", "save": "title", "optional": true }
+      ],
+      "output": { "url": "{videoUrl}", "title": "{title}" }
+    },
+    {
+      "id": "x-syndication",
+      "name": "X·官方兜底",
+      "match": ["x\\.com/", "twitter\\.com/"],
+      "steps": [
+        { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
+        { "type": "http", "method": "GET", "url": "https://cdn.syndication.twimg.com/tweet-result?id={id}&lang=en", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "video_info.variants", "save": "variants" },
+        { "type": "pick", "from": "variants", "key": "bitrate", "take": "url", "max": true, "save": "videoUrl" },
+        { "type": "jsonpath", "from": "json", "path": "text", "save": "title", "optional": true }
+      ],
+      "output": { "url": "{videoUrl}", "title": "{title}" }
+    }
+  ]
+}
