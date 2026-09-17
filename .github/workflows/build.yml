@@ -35,20 +35,13 @@ jobs:
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
 
-      - name: 固定签名（保证新版本能覆盖安装）
-        uses: actions/cache@v4
-        with:
-          path: ~/.android/debug.keystore
-          key: videosnatch-debug-keystore-v1
-
-      - name: 生成签名文件（如没有）
+      - name: 固定签名（保证新版本能直接覆盖安装）
         run: |
           mkdir -p ~/.android
-          if [ ! -f ~/.android/debug.keystore ]; then
-            keytool -genkeypair -v -keystore ~/.android/debug.keystore -storepass android -keypass android \
-              -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
-              -dname "CN=Android Debug,O=Android,C=US"
-          fi
+          echo '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' | base64 -d > ~/.android/debug.keystore
+
+      - name: 内置规则与根目录保持一致
+        run: cp rules.json app/src/main/assets/rules.json
 
       - name: 编译 APK
         run: gradle assembleDebug --no-daemon -q
