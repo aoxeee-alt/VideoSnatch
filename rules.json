@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "updated": "2026-09-17",
   "note": "解析规则文件。抖音/皮皮虾/X 的解析方式全写在这里。接口失效时只要改这个文件，App 会自动拉取新规则，不用重新安装。",
   "extractUrl": "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+",
@@ -65,6 +65,33 @@
         "downloadHeaders": {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
           "Referer": "https://www.douyin.com/"
+        }
+      }
+    },
+    {
+      "id": "pipix-render",
+      "name": "皮皮虾·网页数据",
+      "match": ["pipix\\.com"],
+      "steps": [
+        { "type": "http", "method": "GET", "url": "{link}", "followRedirects": true, "save": "page",
+          "headers": { "Referer": "https://h5.pipix.com/" } },
+        { "type": "regex", "from": "page", "save": "render",
+          "pattern": ["id=\"RENDER_DATA\"[^>]*>([^<]+)</script>"] },
+        { "type": "decode", "from": "render", "codec": "url", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.video.video_download.url_list[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.video.video_high.url_list[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.video.video_mid.url_list[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.video.video_low.url_list[0].url", "save": "videoUrl", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.content", "save": "title", "optional": true },
+        { "type": "jsonpath", "from": "json", "path": "ppxItemDetail.item.cover.url_list[0].url", "save": "cover", "optional": true }
+      ],
+      "output": {
+        "url": "{videoUrl}",
+        "title": "{title}",
+        "cover": "{cover}",
+        "downloadHeaders": {
+          "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+          "Referer": "https://h5.pipix.com/"
         }
       }
     },
