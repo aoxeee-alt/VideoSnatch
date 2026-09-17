@@ -1,0 +1,75 @@
+============================================================
+通道: tenapi
+请求: https://tenapi.cn/v2/douyinvideo?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: HTTPError HTTP Error 502: Bad Gateway
+
+============================================================
+通道: pearktrue
+请求: https://api.pearktrue.cn/api/video/?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: URLError <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1000)>
+
+============================================================
+通道: werplus
+请求: https://api.wer.plus/api/dy?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: URLError <urlopen error [Errno -2] Name or service not known>
+
+============================================================
+通道: 52vmy
+请求: https://api.52vmy.cn/api/wl/top/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: HTTPError HTTP Error 522: Connection Timeout with Origin Server
+
+============================================================
+通道: qjqq
+请求: https://api.qjqq.cn/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: URLError <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1000)>
+
+============================================================
+通道: lolimi
+请求: https://api.lolimi.cn/API/dy/?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: URLError <urlopen error [Errno -2] Name or service not known>
+
+============================================================
+通道: nsmao
+请求: https://api.nsmao.net/api/dy/?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: URLError <urlopen error [Errno -2] Name or service not known>
+
+============================================================
+通道: mmp
+请求: https://api.mmp.cc/api/douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+HTTP: 200  大小: 5
+命中关键字: 无
+内容片段: 接口不存在
+
+============================================================
+通道: douyinwtf
+请求: https://api.douyin.wtf/api?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+失败: HTTPError HTTP Error 404: Not Found
+
+============================================================
+通道: qqsuu
+请求: https://api.qqsuu.cn/api/dm-douyin?url=https%3A%2F%2Fwww.iesdouyin.com%2Fshare%2Fvideo%2F7686318782050422630%2F
+HTTP: 200  大小: 5
+命中关键字: 无
+内容片段: 接口不存在
+
+============================================================
+通道: 官方iteminfo
+请求: https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=7686318782050422630
+HTTP: 200  大小: 0
+命中关键字: 无
+内容片段: 
+
+============================================================
+通道: 官方分享页
+请求: https://www.iesdouyin.com/share/video/7686318782050422630/
+HTTP: 200  大小: 32336
+命中关键字: 无
+内容片段: <!doctype html><html><head> <script data-sdk-glue-in="pre-handler" nonce="argus-csp-token" >    !function(){var e="1243",t="16720";function n(){ try{ var n="gfkadpd",o=e+","+t,i=function(e){for(var t=document.cookie.split(";"),n=0;n<t.length;n++){var o=t[n].trim();if(o.startsWith(e+"="))return o.substring(e.length+1)}return null}(n);if(i){if(-1!=i.indexOf(o))return; o+="|"+i}document.cookie =n+"="
+
+============================================================
+通道: 官方网页
+请求: https://www.douyin.com/video/7686318782050422630
+HTTP: 200  大小: 2397
+命中关键字: 无
+内容片段: <!DOCTYPE html><html lang="en"><head><link rel="icon"href="data:;base64,="><head><script>;(function(w,d,u,b,n,pc,ga,ae,po,s,p,e,t,pp){pc='precollect';ga='getAttribute';ae='addEventListener';po='PerformanceObserver';s=function(m){p=[].slice.call(arguments);p.push(Date.now(),location.href);(m==pc?s.p.a:s.q).push(p)};s.q=[];s.p={a:[]};w[n]=s;e=document.createElement('script');e.src=u+'?bid='+b+'&glob
+
