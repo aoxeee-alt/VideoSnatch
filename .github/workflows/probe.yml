@@ -14,45 +14,73 @@ jobs:
       - name: 取出代码
         uses: actions/checkout@v4
 
-      - name: 批量探测（第2批）
+      - name: 批量探测（第3批：带Cookie访问官方接口）
         run: |
           python3 - <<'PY' > probe-result.txt
-          import urllib.request, urllib.parse
+          import urllib.request, urllib.parse, http.cookiejar, json, urllib.error
           ID = "7686318782050422630"
-          MOBILE = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1"
-          SPIDER = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-          BINGBOT = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)"
-          ENC = urllib.parse.quote("https://www.iesdouyin.com/share/video/" + ID + "/", safe="")
-          cands = [
-            ("分享页+蜘蛛UA",  "https://www.iesdouyin.com/share/video/" + ID + "/", SPIDER),
-            ("网页+蜘蛛UA",    "https://www.douyin.com/video/" + ID, SPIDER),
-            ("分享页+必应UA",  "https://www.iesdouyin.com/share/video/" + ID + "/", BINGBOT),
-            ("tiktokv-feed-a", "https://api22-normal-c-useast2a.tiktokv.com/aweme/v1/feed/?aweme_id=" + ID + "&version_code=300904&app_name=musical_ly&channel=googleplay&device_platform=android&device_type=Pixel&os_version=9&aid=1180", MOBILE),
-            ("tiktokv-feed-b", "https://api16-normal-c-useast1a.tiktokv.com/aweme/v1/feed/?aweme_id=" + ID + "&version_code=300904&app_name=musical_ly&channel=googleplay&device_platform=android&device_type=Pixel&os_version=9&aid=1180", MOBILE),
-            ("vvhan",          "https://api.vvhan.com/api/douyin?url=" + ENC, MOBILE),
-            ("aa1",            "https://api.aa1.cn/api/douyin?url=" + ENC, MOBILE),
-            ("oioweb",         "https://api.oioweb.cn/api/douyin?url=" + ENC, MOBILE),
-            ("tangdouz",       "https://api.tangdouz.com/api/douyin.php?url=" + ENC, MOBILE),
-            ("cenguigui",      "https://api.cenguigui.cn/api/douyin?url=" + ENC, MOBILE),
-            ("xiaobaibk",      "https://api.xiaobaibk.cn/api/douyin?url=" + ENC, MOBILE),
-            ("yyy001",         "https://api.yyy001.com/api/douyin?url=" + ENC, MOBILE),
-          ]
-          keys = ["douyinvod", ".mp4", "play_addr", "playAddr", "playwm", "aweme_id", "video_id", "play_addr_low"]
-          for name, url, ua in cands:
+          UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+
+          def new_session():
+              cj = http.cookiejar.CookieJar()
+              return urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj)), cj
+
+          def fetch(url, opener=None, headers=None, timeout=25):
+              op = opener or urllib.request.build_opener()
+              h = {"User-Agent": UA, "Accept": "application/json, text/plain, */*"}
+              if headers:
+                  h.update(headers)
+              req = urllib.request.Request(url, headers=h)
+              with op.open(req, timeout=timeout) as r:
+                  return r.status, r.read().decode("utf-8", "ignore")
+
+          print("步骤1：访问首页领取访客Cookie")
+          opener, cj = new_session()
+          try:
+              st, body = fetch("https://www.douyin.com/", opener, {"Accept": "text/html"})
+              print("  首页 HTTP:", st, " 大小:", len(body))
+          except Exception as e:
+              print("  首页失败:", type(e).__name__, str(e)[:120])
+          cookies = "; ".join(f"{c.name}={c.value}" for c in cj)
+          print("  拿到Cookie:", cookies[:200] if cookies else "无")
+          print()
+
+          base = "https://www.douyin.com/aweme/v1/web/aweme/detail/?"
+          param_sets = {
+              "精简版": {"aweme_id": ID},
+              "带aid": {"aweme_id": ID, "aid": "1128", "device_platform": "web_pc", "channel": "channel_pc_web"},
+              "完整版": {
+                  "aweme_id": ID, "aid": "6383", "app_name": "douyin_web",
+                  "device_platform": "web_pc", "channel": "channel_pc_web",
+                  "pc_client_type": "1", "version_code": "170400",
+                  "cookie_enabled": "true", "platform": "PC", "downlink": "10",
+              },
+          }
+          keys = ["aweme_detail", "play_addr", "url_list", "douyinvod", ".mp4", "status_code"]
+
+          for name, params in param_sets.items():
+              url = base + urllib.parse.urlencode(params)
               print("=" * 60)
-              print("通道:", name)
-              print("请求:", url[:130])
-              try:
-                  req = urllib.request.Request(url, headers={"User-Agent": ua})
-                  with urllib.request.urlopen(req, timeout=25) as r:
-                      body = r.read().decode("utf-8", "ignore")
-                      print("HTTP:", r.status, " 大小:", len(body))
+              print("方案:", name)
+              print("请求:", url[:160])
+              for attempt in ("带Cookie", "带Cookie+Referer"):
+                  hdrs = {"Referer": "https://www.douyin.com/video/" + ID} if attempt == "带Cookie+Referer" else {}
+                  try:
+                      st, body = fetch(url, opener, hdrs)
                       hit = [k for k in keys if k in body]
-                      print("命中关键字:", hit if hit else "无")
-                      print("内容片段:", body[:500].replace("\n", " "))
-              except Exception as e:
-                  print("失败:", type(e).__name__, str(e)[:150])
+                      print(f"  [{attempt}] HTTP: {st} 大小: {len(body)} 命中: {hit if hit else '无'}")
+                      print("  片段:", body[:300].replace("\n", " "))
+                  except Exception as e:
+                      print(f"  [{attempt}] 失败:", type(e).__name__, str(e)[:120])
               print()
+
+          print("步骤2：直接测分享页（带Cookie）")
+          try:
+              st, body = fetch("https://www.iesdouyin.com/share/video/" + ID + "/", opener, {"Accept": "text/html"})
+              hit = [k for k in keys if k in body]
+              print("  HTTP:", st, " 大小:", len(body), " 命中:", hit if hit else "无")
+          except Exception as e:
+              print("  失败:", type(e).__name__, str(e)[:120])
           PY
           cat probe-result.txt
 
@@ -61,5 +89,5 @@ jobs:
           git config user.name "probe-bot"
           git config user.email "probe@bot.local"
           git add probe-result.txt
-          git commit -m "探测结果第2批" || echo "无变化"
+          git commit -m "探测结果第3批" || echo "无变化"
           git push || echo "推送失败"
