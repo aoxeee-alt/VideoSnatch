@@ -27,12 +27,6 @@ class RuleEngine(private val log: (String) -> Unit = {}) {
         .connectTimeout(20, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .followRedirects(true)
-        .addInterceptor { chain ->
-            val req = chain.request().newBuilder()
-                .header("Accept-Encoding", "gzip")
-                .build()
-            chain.proceed(req)
-        }
         .build()
 
     @Throws(Exception::class)
