@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "updated": "2026-09-17",
   "note": "解析规则文件。抖音/皮皮虾/X 的解析方式全写在这里。接口失效时只要改这个文件，App 会自动拉取新规则，不用重新安装。",
   "extractUrl": "https?://[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]+",
@@ -137,8 +137,21 @@
       "output": { "url": "{videoUrl}", "title": "{title}", "cover": "{cover}" }
     },
     {
+      "id": "x-syndication",
+      "name": "X·官方兜底",
+      "match": ["x\\.com/", "twitter\\.com/"],
+      "steps": [
+        { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
+        { "type": "http", "method": "GET", "url": "https://cdn.syndication.twimg.com/tweet-result?id={id}&lang=en&token=a", "save": "json" },
+        { "type": "jsonpath", "from": "json", "path": "video_info.variants", "save": "variants" },
+        { "type": "pick", "from": "variants", "key": "bitrate", "take": "url", "max": true, "save": "videoUrl" },
+        { "type": "jsonpath", "from": "json", "path": "text", "save": "title", "optional": true }
+      ],
+      "output": { "url": "{videoUrl}", "title": "{title}" }
+    },
+    {
       "id": "x-vxtwitter",
-      "name": "X·接口B",
+      "name": "X·备用B",
       "match": ["x\\.com/", "twitter\\.com/"],
       "steps": [
         { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
@@ -147,19 +160,6 @@
         { "type": "set", "value": "i", "save": "user", "whenEmpty": true },
         { "type": "http", "method": "GET", "url": "https://api.vxtwitter.com/{user}/status/{id}", "save": "json" },
         { "type": "jsonpath", "from": "json", "path": "mediaURLs[0]", "save": "videoUrl", "optional": true },
-        { "type": "jsonpath", "from": "json", "path": "text", "save": "title", "optional": true }
-      ],
-      "output": { "url": "{videoUrl}", "title": "{title}" }
-    },
-    {
-      "id": "x-syndication",
-      "name": "X·官方兜底",
-      "match": ["x\\.com/", "twitter\\.com/"],
-      "steps": [
-        { "type": "regex", "from": "link", "save": "id", "pattern": ["status(?:es)?/(\\d{5,})"] },
-        { "type": "http", "method": "GET", "url": "https://cdn.syndication.twimg.com/tweet-result?id={id}&lang=en", "save": "json" },
-        { "type": "jsonpath", "from": "json", "path": "video_info.variants", "save": "variants" },
-        { "type": "pick", "from": "variants", "key": "bitrate", "take": "url", "max": true, "save": "videoUrl" },
         { "type": "jsonpath", "from": "json", "path": "text", "save": "title", "optional": true }
       ],
       "output": { "url": "{videoUrl}", "title": "{title}" }
